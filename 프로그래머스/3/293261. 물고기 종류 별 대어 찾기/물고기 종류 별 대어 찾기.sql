@@ -1,12 +1,6 @@
-SELECT 
-    A.ID, 
-    B.FISH_NAME, 
-    A.LENGTH
-FROM 
-    FISH_INFO A
-JOIN 
-    FISH_NAME_INFO B ON A.FISH_TYPE = B.FISH_TYPE
-WHERE (a.fish_type, a.length) in (select fish_type, max(length)
-                          from FISH_INFO
-                          group by fish_type)
-order by A.id
+-- 코드를 작성해주세요
+select ID, fn.FISH_NAME, LENGTH
+from FISH_INFO fi
+join FISH_NAME_INFO fn
+on fi.FISH_TYPE = fn.FISH_TYPE
+where (fi.FISH_TYPE, LENGTH) in (select FISH_TYPE, MAX(LENGTH) from FISH_INFO group by FISH_TYPE)
