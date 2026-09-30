@@ -3,20 +3,28 @@ def solution(numbers, target):
     
     def bfs(st):
         q = deque()
-        q.append((st,0))
-        answer = 0
+        idx = 0
+        cnt = 0
+        q.append((st,idx))
+        q.append((-st, idx))
+        
         while q:
-            x,cnt = q.popleft()
+            x,idx = q.popleft()
             
-            if cnt==len(numbers):
+            if idx == len(numbers) - 1:
+                
                 if x == target:
-                    answer += 1
-            else:
+                    cnt +=1
             
-                q.append((x-numbers[cnt],cnt+1))
-                q.append((x+numbers[cnt], cnt+1))
-            
-            
-        return answer
+            if idx < len(numbers) -1:
+                for dx in (numbers[idx+1]) , -(numbers[idx+1]):
+                    nx = dx + x
+                    
+                    q.append((nx,idx+1))
+        return cnt
     
-    return bfs(0)
+    
+    
+    return bfs(numbers[0])
+    
+    
