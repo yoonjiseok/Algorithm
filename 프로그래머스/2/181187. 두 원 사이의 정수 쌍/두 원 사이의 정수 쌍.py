@@ -1,38 +1,35 @@
 import math
-
 def solution(r1, r2):
-    cnt = 0
-
-    r22 = r2**2
-    r11 = r1**2
     
-    for x in range(1,r2):
+    max_ans = 0
+    min_ans = 0
+    
+    R1 = r1**2
+    R2 = r2**2
+    
+    for x in range(r1+1):
+        Y = R1 - x**2
+        y = math.isqrt(Y)
         
-        max_r = r22 - x**2 
-        min_r = r11 - x**2
+        if y * y == Y :
+            min_ans -= 1
         
-        if min_r <= 0:
+        min_ans += 1
             
-            max_r = math.sqrt(max_r)
-            max_r = math.floor(max_r)
-            cnt += max_r
-        else:
+        min_ans += int(y)
         
-            max_r = math.sqrt(max_r)
-            min_r = math.sqrt(min_r)
-
-            max_r = math.floor(max_r)
-            min_r = math.ceil(min_r)
-
-            cnt += max_r - min_r + 1
+    
+    for x in range(0, r2+1):
+        Y = R2 - x**2
         
-    cnt *= 4
+        if x == 0:
+            max_ans -= r2-r1 + 1
+        max_ans += int(math.isqrt(Y))
+        max_ans +=1
     
-    cnt2 = r2-r1+1
-    cnt2 *= 4
+            
+    print(max_ans)
+    print(min_ans)
     
-    
-    return(cnt+cnt2)
-    
-    
-    
+    answer = 0
+    return (max_ans-min_ans) * 4
