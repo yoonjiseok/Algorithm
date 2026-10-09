@@ -1,24 +1,29 @@
 def solution(n, times):
     
     left = 1
-    right = max(times) * n
+    right = 0
     
+    for i in times:
+        right += n*i
     
     answer = []
     
     while left <= right:
-        mid = (right+left)//2
-        temp = 0
+        mid = (left+right) // 2
         
+        temp = 0
         for i in times:
             temp += mid//i
+            
+        if temp < n:
+            left = mid + 1
+        
+        if temp > n:
+            right = mid -1
         
         if temp >= n:
-            right = mid -1
             answer.append(mid)
-
-        else:
-            left = mid + 1
+            right = mid -1
             
     
     return min(answer)
