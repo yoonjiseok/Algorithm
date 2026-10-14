@@ -1,83 +1,65 @@
+from collections import deque
 def solution(plans):
-    waiting = []
-    q = {}
+    q = []
+    st = {}
+    re = {}
+    answer = []
     
-    for i in range(len(plans)):
-        temp = plans[i][1].split(":")
-        t1 = temp[0]
-        t2 = temp[1]
-        t1 = int(t1)
-        t2 = int(t2)
+    for i in plans:
+        h,m = i[1].split(":")
+        h = int(h)
+        m = int(m)
+        d = i[2]
+        d = int(d)
         
-        t = t1*60 + t2
+        t = h*60 + m
         
-        tl = plans[i][2]
-        tl = int(tl)
+        st[i[0]] = t
+        re[i[0]] = d
         
-        plans[i][1] = t
-        plans[i][2] = tl
-        
-        q[plans[i][0]] = {'st' : t , 're' : tl}
+        i[1] = t
+        i[2] = d
     
-    
-    plans.sort(key=lambda x : x[1])
+    plans.sort(key=lambda x:x[1])
     
     time = plans[0][1]
     
-    answer = []
     
-    len_plans = len(plans)
-    
-    X,Y,Z = plans.pop(0)
-    
-    while len(answer) != len_plans:
-        #plans 가 있다면
-        if plans:
-            t_X,t_Y,t_Z = plans.pop(0)
-            
-            #한번에 처리가 가능한지
-            if Y+Z <= t_Y:
-                answer.append(X)
-                #대기하는 작업이 있는지
-                if waiting:
-                    
-                    now = Y+Z
-                    
-                    while waiting:
-                        w_X, w_Y, w_Z = waiting.pop()  
-                        
-                        if now+w_Z <= t_Y:
-                            answer.append(w_X)
-                            now = now+w_Z
-                        else:
-                            gap = t_Y - now
-                            
-                            waiting.append((w_X, t_Y, w_Z - gap))
-                            break
-
-                #대기하는 작없이 없다
-                
-                
-                
-                X,Y,Z = t_X,t_Y,t_Z
-            
-            #한번에 처리가 불가능함
+    while plans or q:            
+        while plans:
+            subject,start,duration = plans.pop(0)
+            time = start
+            if plans and time + duration > plans[0][1]:
+                elapsed = plans[0][1] - time
+                re[subject] -= elapsed
+                time = plans[0][1]
+                q.append(subject)
             else:
-                gap = t_Y - Y
-                waiting.append((X,t_Y, Z-gap))
-                X,Y,Z = t_X,t_Y,t_Z
-        
-        #plans가 없다면
-        else:
-            answer.append(X)
-            while waiting:
-                w_X, w_Y, w_Z = waiting.pop()
-
-                answer.append(w_X)
+                # 현재 과제를 끝까지 마칠 수 있음
+                time += duration
+                answer.append(subject)
                 
-            
-            
-            break
-        
+                # 과제를 끝낸 시각(time)에 멈춰둔 과제(q)를 처리할 수 있는지 확인
+                while q:
+                    if plans and time >= plans[0][1]:
+                        break # 다음 새 과제 시작 시간이 되면 멈춤
+                    
+                    p_subject = q.pop()
+                    
+                    if plans and time + re[p_subject] > plans[0][1]:
+                        # 멈춘 과제를 다 못 끝내면 남은 시간 갱신 후 다시 넣고 탈출
+                        re[p_subject] -= plans[0][1] - time
+                        time = plans[0][1]
+                        q.append(p_subject)
+                        break
+                    else:
+                        # 멈춘 과제를 다 끝낼 수 있음
+                        time += re[p_subject]
+                        answer.append(p_subject)
+        # wating만 있을때
+        while q:
+            p_subject = q.pop()
+            time += re[p_subject]
+            answer.append(p_subject)
     
     return answer
