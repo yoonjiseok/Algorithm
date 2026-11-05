@@ -1,36 +1,34 @@
 from collections import defaultdict
 def solution(id_list, report, k):
     
-
+    report_dict_y = {}
+    report_dict_x = {}
     
-    singo_list = defaultdict(int)
-    singo_id = set()
-    rec_list = defaultdict(int)
-    
-    report = set(report)
+    for i in id_list:
+        report_dict_y[i] = 0
+        report_dict_x[i] = []
+        
+    a = set()
     
     for i in report:
         x,y = i.split(' ')
-        singo_list[x] += 1
-        rec_list[y] += 1
-        
-                
-            
-    answer = defaultdict(int)
 
-
-    for i in (id_list):
-        if rec_list[i] >= k:
-            for j in (id_list):
-
-                if (j +' ' + i) in report:
-                    answer[j] += 1
+        if (x,y) in a:
+            continue
+        else:
+            report_dict_y[y] += 1
+            report_dict_x[x].append(y)
+            a.add((x,y))
         
+    answer = []
+    for i in id_list:
+        Y = report_dict_x[i]
         
+        cnt = 0
+        for j in Y:
+            if report_dict_y[j] >= k:
+                cnt+=1
         
-        
-    real_answer = []
-    for i in (id_list):
-        real_answer.append(answer[i])
+        answer.append(cnt)
     
-    return real_answer
+    return answer
